@@ -42,39 +42,30 @@
           break;
       }
 
-      const obj = await response.json();
+      let obj;
+      const parser = new DOMParser();
+
+      if (type === "text/xml") {
+        obj = await response.text();
+        // console.log('obj is', obj);
+      }
+      else if (type === "application/json") {
+        obj = await response.json();
+      } else {
+        obj = await response.json();
+      }
+      console.log('obj is:', obj);
+      //If we have a message, display it.
       if (obj.message) {
-        content.innerHTML += `<p>Message: ${obj.message}`;
+        content.innerHTML += `<p>Message json: ${obj.message}</p>`;
       }
-
-      if (obj.id) {
-        content.innerHTML += `id: ${obj.id}`;
+      else {
+        const xmlInfo = parser.parseFromString(obj, 'text/xml');
+        if (xmlInfo.querySelector('response message').textContent) {
+          content.innerHTML += `<p>Message XML: ${xmlInfo.querySelector('response message').textContent}</p>`;
+        }
       }
-
-      content.innerHTML += '</p>';
     };
-
-    const formatMessage = (type, message, id) => {
-      if (type === "application/json") {
-        response.message = message;
-        if (id) {
-          response.id = id;
-        }
-        return JSON.stringify(response);
-
-      } else if (type === "text/xml") {
-
-        let response = `<response>
-          <message>${message}</message>`;
-        if (id) {
-          response += `<id>${id}</id>`;
-        }
-
-        response += '</response>';
-        console.log("response status:", response.status);
-        return response;
-      }
-    }
 
     const sendMessage = async () => {
 
@@ -103,8 +94,6 @@
       //     selectData = formatMessage(type, "The page you are looking for was not found", 'notFound');
       //     break;
       // }
-
-      //fix url variable??
       const response = await fetch(page.value, {
         method: "POST",
         headers: {
@@ -112,7 +101,7 @@
           // 'Content-Length': selectData.length,
           'Accept': type.value,
         },
-        body: selectData,
+        body: "testingnn",
       });
 
       handleResponse(response);
