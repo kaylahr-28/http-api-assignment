@@ -63,10 +63,12 @@
 
       //display message based on whether its json or xml
       if (obj.message) {
+        console.log(JSON.stringify(obj));
         content.innerHTML += `<p>Message: ${obj.message}</p>`;
       }
       else {
         const xmlInfo = parser.parseFromString(obj, 'text/xml');
+        console.log(JSON.stringify(obj));
         if (xmlInfo.querySelector('response message').textContent) {
           content.innerHTML += `<p>Message: ${xmlInfo.querySelector('response message').textContent}</p>`;
         }

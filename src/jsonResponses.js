@@ -10,9 +10,6 @@ const respondJSON = (request, response, status, message, id) => {
         output.id = id;
     }
 
-    //appears in terminal
-    console.log("output json", JSON.stringify(output));
-
     response.writeHead(status, { 'Content-Type': 'application/json' });
     response.write(JSON.stringify(output));
     response.end();

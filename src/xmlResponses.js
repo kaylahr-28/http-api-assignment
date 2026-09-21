@@ -5,16 +5,12 @@
      * content type
 **/
 const respondXML = (request, response, status, message, id) => {
-    let output = `<response>
-    <message>${message}</message>`;
+    let output = `<response><message>${message}</message>`;
 
     if (id) {
         output += `<id>${id}</id>`;
     }
     output += '</response>';
-
-    //appears in terminal
-    console.log("output xml", output);
 
     response.writeHead(status, { 'Content-Type': 'text/xml' });
     response.write(output);
