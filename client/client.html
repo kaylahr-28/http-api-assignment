@@ -9,12 +9,17 @@
     let response = {
       message: "",
     }
-    //changes innerHTML of page based on status code
+
+    /**
+     * handleResponse: changes innerHTML of page based on status codes.
+     * places message on page from json or xml content
+     */
     const handleResponse = async (response) => {
       const content = document.querySelector('#content');
       const type = document.querySelector("#type").value;
       const page = document.querySelector("#page").value;
 
+      //html heading changes based on status code
       switch (response.status) {
         case 200:
           content.innerHTML = `<b>Success</b>`;
@@ -38,69 +43,47 @@
           content.innerHTML = `<b>Resource Not Found</b>`;
           break;
         default:
+          content.innerHTML = `<b>Resource Not Found</b>`;
           break;
       }
 
       let obj;
+
+      //for xml parsing
       const parser = new DOMParser();
 
       if (type === "text/xml") {
         obj = await response.text();
-        // console.log('obj is', obj);
       }
       else if (type === "application/json") {
         obj = await response.json();
       } else {
         obj = await response.json();
       }
-      console.log('obj is:', obj);
-      //If we have a message, display it.
+
+      //display message based on whether its json or xml
       if (obj.message) {
-        content.innerHTML += `<p>Message json: ${obj.message}</p>`;
+        content.innerHTML += `<p>Message: ${obj.message}</p>`;
       }
       else {
         const xmlInfo = parser.parseFromString(obj, 'text/xml');
         if (xmlInfo.querySelector('response message').textContent) {
-          content.innerHTML += `<p>Message XML: ${xmlInfo.querySelector('response message').textContent}</p>`;
+          content.innerHTML += `<p>Message: ${xmlInfo.querySelector('response message').textContent}</p>`;
         }
       }
     };
 
+    /**
+       * sendMessage: fetches response and provides info
+       * based on selected options
+       */
     const sendMessage = async () => {
-
-      let selectData = "";
-
-      // switch (type) {
-      //   case '/success':
-      //     selectData = formatMessage(type, "This is a successful response", false);
-      //     break;
-      //   case '/badRequest':
-      //     selectData = formatMessage(type, "Missing valid query parameter set to true", 'badRequest');
-      //     break;
-      //   case '/unauthorized':
-      //     selectData = formatMessage(type, "Missing loggedIn query parameter set to yes", 'unauthorized');
-      //     break;
-      //   case '/forbidden':
-      //     selectData = formatMessage(type, "You do not have access to this content", 'forbidden');
-      //     break;
-      //   case '/internal':
-      //     selectData = formatMessage(type, "Internal server error: something went wrong", 'internalError');
-      //     break;
-      //   case '/notImplemented':
-      //     selectData = formatMessage(type, "A get request for this page has not been implemented yet. Check again later for updated content", 'notImplemented');
-      //     break;
-      //   default:
-      //     selectData = formatMessage(type, "The page you are looking for was not found", 'notFound');
-      //     break;
-      // }
       const response = await fetch(page.value, {
-        method: "POST",
+        method: "GET",
         headers: {
           'Content-Type': type.value,
-          // 'Content-Length': selectData.length,
           'Accept': type.value,
         },
-        body: "testingnn",
       });
 
       handleResponse(response);

@@ -1,6 +1,10 @@
 // referenced https://www.w3schools.com/xml/xml_parser.asp
 
-const respondJSONXML = (request, response, status, message, id) => {
+/**
+     * respondXML: formats message/id in xml, writes approprate
+     * content type
+**/
+const respondXML = (request, response, status, message, id) => {
     let output = `<response>
     <message>${message}</message>`;
 
@@ -9,6 +13,7 @@ const respondJSONXML = (request, response, status, message, id) => {
     }
     output += '</response>';
 
+    //appears in terminal
     console.log("output xml", output);
 
     response.writeHead(status, { 'Content-Type': 'text/xml' });
@@ -17,5 +22,5 @@ const respondJSONXML = (request, response, status, message, id) => {
 };
 
 module.exports = {
-    respondJSONXML,
+    respondXML,
 }
