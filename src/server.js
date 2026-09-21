@@ -25,7 +25,6 @@ const onRequest = (request, response) => {
             htmlHandler.getCSS(request, response);
             break;
         case '/success':
-            // console.log("request:", request.headers['content-type']);
             handler.respondJSONXML(request, response, 200, "This is a successful response", false);
             break;
         case '/badRequest':
@@ -53,12 +52,9 @@ const onRequest = (request, response) => {
         default:
             handler.respondJSONXML(request, response, 404, "The page you are looking for was not found", 'notFound');
             break;
-    }
-    //remove after testing
-    //console.log("pathname", parsedUrl.pathname);
-}
-
+    };
+};
 
 http.createServer(onRequest).listen(port, () => {
     console.log(`Listening on 127.0.0.1: ${port}`);
-})
+});

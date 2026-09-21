@@ -16,7 +16,6 @@
       const page = document.querySelector("#page").value;
 
       switch (response.status) {
-        //200,400,200,401,403,500,501,404
         case 200:
           content.innerHTML = `<b>Success</b>`;
           break;
@@ -106,11 +105,6 @@
 
       handleResponse(response);
     }
-
-
-
-
-
 
     const init = () => {
       const sendBtn = document.querySelector("#send");
