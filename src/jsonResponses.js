@@ -1,6 +1,5 @@
 const respondJSONXML = (request, response, status, message, id) => {
     const output = { "message": "" };
-    const requestType = request.headers['content-type'];
     output.message = message;
     if (id) {
         output.id = id;
