@@ -12,12 +12,13 @@
     //changes innerHTML of page based on status code
     const handleResponse = async (response) => {
       const content = document.querySelector('#content');
+      const type = document.querySelector("#type").value;
+      const page = document.querySelector("#page").value;
 
       switch (response.status) {
         //200,400,200,401,403,500,501,404
         case 200:
           content.innerHTML = `<b>Success</b>`;
-
           break;
         case 400:
           content.innerHTML = `<b>Bad Request</b>`;
@@ -43,11 +44,17 @@
 
       const obj = await response.json();
       if (obj.message) {
-        content.innerHTML += `<p>${obj.message}</p>`;
+        content.innerHTML += `<p>Message: ${obj.message}`;
       }
+
+      if (obj.id) {
+        content.innerHTML += `id: ${obj.id}`;
+      }
+
+      content.innerHTML += '</p>';
     };
 
-    const parseMessage = (type, message, id) => {
+    const formatMessage = (type, message, id) => {
       if (type === "application/json") {
         response.message = message;
         if (id) {
@@ -55,57 +62,57 @@
         }
         return JSON.stringify(response);
 
-      } else if (type === "text/html") {
+      } else if (type === "text/xml") {
 
         let response = `<response>
-    <message>${message}</message>`;
+          <message>${message}</message>`;
         if (id) {
           response += `<id>${id}</id>`;
         }
+
         response += '</response>';
-        console.log(response.status);
+        console.log("response status:", response.status);
         return response;
       }
     }
 
     const sendMessage = async () => {
-      const type = document.querySelector("#type").value;
-      const page = document.querySelector("#page").value;
 
-      let formData = "";
+      let selectData = "";
 
-      switch (type) {
-        case '/success':
-          formData = parseMessage(type, "This is a successful response", false);
-          break;
-        case '/badRequest':
-          formData = parseMessage(type, "Missing valid query parameter set to true", 'badRequest');
-          break;
-        case '/unauthorized':
-          formData = parseMessage(type, "Missing loggedIn query parameter set to yes", 'unauthorized');
-          break;
-        case '/forbidden':
-          formData = parseMessage(type, "You do not have access to this content", 'forbidden');
-          break;
-        case '/internal':
-          formData = parseMessage(type, "Internal server error: something went wrong", 'internalError');
-          break;
-        case '/notImplemented':
-          formData = parseMessage(type, "A get request for this page has not been implemented yet. Check again later for updated content", 'notImplemented');
-          break;
-        default:
-          formData = parseMessage(type, "The page you are looking for was not found", 'notFound');
-          break;
-      }
+      // switch (type) {
+      //   case '/success':
+      //     selectData = formatMessage(type, "This is a successful response", false);
+      //     break;
+      //   case '/badRequest':
+      //     selectData = formatMessage(type, "Missing valid query parameter set to true", 'badRequest');
+      //     break;
+      //   case '/unauthorized':
+      //     selectData = formatMessage(type, "Missing loggedIn query parameter set to yes", 'unauthorized');
+      //     break;
+      //   case '/forbidden':
+      //     selectData = formatMessage(type, "You do not have access to this content", 'forbidden');
+      //     break;
+      //   case '/internal':
+      //     selectData = formatMessage(type, "Internal server error: something went wrong", 'internalError');
+      //     break;
+      //   case '/notImplemented':
+      //     selectData = formatMessage(type, "A get request for this page has not been implemented yet. Check again later for updated content", 'notImplemented');
+      //     break;
+      //   default:
+      //     selectData = formatMessage(type, "The page you are looking for was not found", 'notFound');
+      //     break;
+      // }
 
       //fix url variable??
-      const response = await fetch("/", {
+      const response = await fetch(page.value, {
         method: "POST",
         headers: {
           'Content-Type': type.value,
+          // 'Content-Length': selectData.length,
           'Accept': type.value,
         },
-        body: formData,
+        body: selectData,
       });
 
       handleResponse(response);
@@ -119,7 +126,7 @@
     const init = () => {
       const sendBtn = document.querySelector("#send");
 
-      sendBtn.addEventListener('click', () => { sendMessage });
+      sendBtn.addEventListener('click', sendMessage);
     };
 
     window.onload = init;

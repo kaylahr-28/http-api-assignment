@@ -1,7 +1,7 @@
 
 // referenced https://www.w3schools.com/xml/xml_parser.asp
 // https://developer.mozilla.org/en-US/docs/Web/API/XMLSerializer
-const respondXML = (request, response, status, message, id, value) => {
+const respondXML = (request, response, status, message, id) => {
     let output = `<response>
     <message>${message}</message>`;
 
@@ -26,8 +26,7 @@ const respondXML = (request, response, status, message, id, value) => {
     // }
 
     // const serializer = new XMLSerializer();
-    console.log(output);
-    if (value) return output;
+    console.log("output xml", output);
     response.writeHead(status, { 'Content-Type': 'text/xml' });
     response.write(output);
     response.end();

@@ -45,7 +45,7 @@ const onRequest = (request, response) => {
             break;
     }
     //remove after testing
-    console.log("pathname", parsedUrl.pathname);
+    //console.log("pathname", parsedUrl.pathname);
 }
 
 
